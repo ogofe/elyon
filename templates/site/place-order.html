@@ -1,0 +1,113 @@
+{% extends "./base.html" %}
+{% load static %}
+
+
+{% block content %}
+{% block hero %}
+<section id="hero" class="index-hero">
+  <div class="hero-container" data-aos="fade-up" data-aos-delay="150">
+    <h1>Place an Order</h1>
+    <h2 class="col-lg-6 px-2">
+      Your premier destination for military and safety gears, and uniforms.
+      Explore our wide range of high-quality products, including combat clothing, tactical gear, and protective equipment.
+    </h2>
+  </div>
+</section><!-- End Hero -->
+{% endblock hero %}
+
+
+<main id="main">
+
+  <div class="py-5 px-2 px-lg-5 contact">  
+    <div class="col-lg-9 mt-4 mt-lg-0">
+
+      <h2> Please fill out this form to place your order </h2>
+      
+      <form method="post" role="form" class="php-email-form">
+        {% csrf_token %}
+          
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
+            </div>
+
+            <div class="col-md-6 form-group mt-3 mt-md-0">
+                <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+            </div>
+          </div>
+          
+          <div class="form-group mt-3">
+            <div>
+              
+            <!-- Your existing table structure -->
+            <table class="table table-responsive text-nowrap table-striped">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody class="" id="order-items">
+                <tr>
+                  <td class="w-50">
+                    <select class="form-control">
+                      <option selected disabled>Select an Item</option>
+                      {% for item in catalog %}
+                      <option>{{ item.name }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td class=""><input type="number" class="form-control" name="item-1-qty" /></td>
+                  <td class="">
+                    <div class="d-flex justify-content-start align-items-center w-100">
+                      <button onclick="addOrderItem()" type="button" class="btn add-order-button btn-primary mx-2"><i class="bi bi-plus-circle"></i></button>
+                      <button id="1" onclick="removeOrderItem()" type="button" class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            </div>
+          </div>
+          
+          <div class="text-center mt-3"><button type="submit">Place your Order</button></div>
+        </form>
+      </div>
+    </div>
+    
+  </main>
+
+  <!-- Add a counter variable to keep track of the row count -->
+  <script>
+    var itemCount = 1;
+
+    function addOrderItem() {
+      // Increment the counter
+      itemCount++;
+
+      // Clone the first row
+      var newRow = document.getElementById('order-items').getElementsByTagName('tr')[0].cloneNode(true);
+
+      // Update the ID and name attributes of the new row elements
+      newRow.id = 'order-item-' + itemCount;
+      newRow.querySelector('select').name = 'item-' + itemCount + '-name';
+      newRow.querySelector('button').id = itemCount;
+      newRow.querySelector('input').name = 'item-' + itemCount + '-qty';
+
+      // Append the new row to the table body
+      document.getElementById('order-items').appendChild(newRow);
+    }
+
+    function removeOrderItem() {
+      // Remove the row with the corresponding ID
+      let btn = event.target;
+      console.log("Caller:", btn)
+      //var rowToRemove = document.getElementById('order-item-' + count);
+      //rowToRemove.parentNode.removeChild(rowToRemove);
+    }
+  </script>
+
+{% endblock content %}
+

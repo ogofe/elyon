@@ -1,0 +1,7 @@
+'./ELYON_MILITARY TEXTILE CATALOGUEpdf.pdf'
+
+venv/
+*/__pycache__/
+*/**/__pycache__/
+*/migrations/
+*/**/migrations/
