@@ -176,6 +176,10 @@ class CatalogItem(DbModel):
 
     def __str__(self) -> str:
         return f'{self.name}'
+    
+    @property
+    def slug(self):
+        return self.name.lower().replace(' ', '-').replace('.', '').replace("'", '')
 
 
 # class StaffAccount(DbModel):

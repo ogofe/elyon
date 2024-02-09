@@ -453,106 +453,28 @@
       <div class="row" data-aos="fade-up" data-aos-delay="100">
       <div class="col-lg-12 d-flex justify-content-center">
           <ul id="portfolio-flters">
-          <li data-filter="*" class="filter-active">All</li>
-          <li data-filter=".filter-camo">Camoflag</li>
-          <li data-filter=".filter-ceremonial">Ceremonials</li>
-          <li data-filter=".filter-kits">Police Kits</li>
+            <li data-filter="*" class="filter-active">All</li>
+            {% for cat in catalog %}
+                <li data-filter=".filter-{{cat.slug}}">{{ cat.name }} </li>
+            {% endfor %}
           </ul>
       </div>
       </div>
 
       <div class="row portfolio-container" data-aos="fade-up" data-aos-delay="200">
-
-      <div class="col-lg-4 col-md-6 portfolio-item filter-camo">
-          <img src="{% static 'catalog/camo-01.png'%}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-          <h4>App 1</h4>
-          <p>App</p>
-          <a href="{% static 'catalog/camo-01.png'%}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="App 1"><i class="bx bx-plus"></i></a>
-          <a href="portfolio-details.html" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
-          </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6 portfolio-item filter-camo">
-          <img src="{% static 'catalog/camo-02.png'%}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-          <h4>Web 3</h4>
-          <p>Web</p>
-          <a href="{% static 'catalog/camo-02.png'%}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Web 3"><i class="bx bx-plus"></i></a>
-          <a href="portfolio-details.html" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
-          </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6 portfolio-item filter-camo">
-          <img src="{% static 'catalog/camo-04.png'%}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-          <h4>App 2</h4>
-          <p>App</p>
-          <a href="{% static 'catalog/camo-04.png'%}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="App 2"><i class="bx bx-plus"></i></a>
-          <a href="portfolio-details.html" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
-          </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6 portfolio-item filter-camo">
-          <img src="{% static 'catalog/camo-02.png'%}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-          <h4>Card 2</h4>
-          <p>Card</p>
-          <a href="{% static 'catalog/camo-02.png'%}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Card 2"><i class="bx bx-plus"></i></a>
-          <a href="portfolio-details.html" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
-          </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6 portfolio-item filter-kits">
-          <img src="{% static 'catalog/camo-03.png'%}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-          <h4>Web 2</h4>
-          <p>Web</p>
-          <a href="{% static 'catalog/camo-03.png'%}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Web 2"><i class="bx bx-plus"></i></a>
-          <a href="portfolio-details.html" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
-          </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6 portfolio-item filter-kits">
-          <img src="{% static 'catalog/camo-04.png'%}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-          <h4>App 3</h4>
-          <p>App</p>
-          <a href="{% static 'catalog/camo-04.png'%}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="App 3"><i class="bx bx-plus"></i></a>
-          <a href="portfolio-details.html" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
-          </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6 portfolio-item filter-ceremonial">
-          <img src="{% static 'catalog/camo-09.png'%}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-          <h4>Card 1</h4>
-          <p>Card</p>
-          <a href="{% static 'catalog/camo-09.png'%}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Card 1"><i class="bx bx-plus"></i></a>
-          <a href="portfolio-details.html" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
-          </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6 portfolio-item filter-ceremonial">
-          <img src="{% static 'catalog/vest-02.png'%}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-          <h4>Card 3</h4>
-          <p>Card</p>
-          <a href="{% static 'catalog/camo-09.png'%}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Card 3"><i class="bx bx-plus"></i></a>
-          <a href="portfolio-details.html" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
-          </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6 portfolio-item filter-ceremonial">
-          <img src="{% static 'catalog/vest-01.png'%}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-          <h4>Web 3</h4>
-          <p>Web</p>
-          <a href="{% static 'catalog/camo-09.png'%}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Web 3"><i class="bx bx-plus"></i></a>
-          <a href="portfolio-details.html" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
-          </div>
-      </div>
-
+        {% for cat in catalog %}
+            {% for img in cat.images.all %}
+                <div class="col-lg-4 col-md-6 portfolio-item filter-{{cat.slug}}">
+                    <img src="{{ img.image.url }}" class="img-fluid" alt="">
+                    <div class="portfolio-info">
+                        <h4>{{ cat.name }}</h4>
+                        <p>{{ cat.description }}</p>
+                        <a href="{{img.image.url}}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="{{ cat.name }}"><i class="bx bx-zoom-in"></i></a>
+                        <a href="portfolio-details.html" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
       </div>
 
   </div>
@@ -620,7 +542,7 @@
 
   <!-- ======= Contact Section ======= -->
   <section id="contact" class="contact">
-  <div class="container" data-aos="fade-up"">
+  <div class="container" data-aos="fade-up">
 
   <div class=" section-title">
       <h2>Contact</h2>
