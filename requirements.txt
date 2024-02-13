@@ -3,3 +3,4 @@ Django==4.2.10
 Pillow==8.0.0
 sqlparse==0.4.4
 typing_extensions==4.9.0
+whitenoise==6.6.0
