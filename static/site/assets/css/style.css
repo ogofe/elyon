@@ -144,6 +144,11 @@ h6 {
   max-height: 40px;
 }
 
+section#shadow-host-companion{
+  padding: 0px !important;
+  display: none;
+}
+
 /*--------------------------------------------------------------
 # Navigation Menu
 --------------------------------------------------------------*/
@@ -413,6 +418,10 @@ h6 {
   display: block;
 }
 
+.bold{
+  font-weight: 600;
+}
+
 /*--------------------------------------------------------------
 # Hero Section
 --------------------------------------------------------------*/
@@ -425,7 +434,7 @@ h6 {
 }
 
 .index-hero {
-  background: url("../img/military/soldier-in-arms.jpg") top center;
+  background: url("../img/hero-bg.png") top center;
 }
 
 #hero:before {

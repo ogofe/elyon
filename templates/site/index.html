@@ -11,7 +11,7 @@
       <h1>Military. Gears. Kits.</h1>
       <h2>We are the leading provider of military kit and equipment</h2>
       <div class="d-flex">
-          <a href="#about" class="btn-get-started scrollto">Get Started</a>
+          <a href="{% url 'store:home' %}" class="btn-get-started scrollto">Get Started</a>
           <a href="https://www.youtube.com/watch?v=jDDaplaOz7Q" class="glightbox btn-watch-video"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
       </div>
       </div>
@@ -465,11 +465,11 @@
         {% for cat in catalog %}
             {% for img in cat.images.all %}
                 <div class="col-lg-4 col-md-6 portfolio-item filter-{{cat.slug}}">
-                    <img src="{{ img.image.url }}" class="img-fluid" alt="">
+                    <img src="{{ img.file.url }}" class="img-fluid" alt="">
                     <div class="portfolio-info">
                         <h4>{{ cat.name }}</h4>
                         <p>{{ cat.description }}</p>
-                        <a href="{{img.image.url}}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="{{ cat.name }}"><i class="bx bx-zoom-in"></i></a>
+                        <a href="{{img.file.url}}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="{{ cat.name }}"><i class="bx bx-zoom-in"></i></a>
                         <a href="portfolio-details.html" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
                     </div>
                 </div>
@@ -499,7 +499,6 @@
                 <a href=""><i class="bi bi-twitter"></i></a>
                 <a href=""><i class="bi bi-facebook"></i></a>
                 <a href=""><i class="bi bi-instagram"></i></a>
-                <a href=""><i class="bi bi-linkedin"></i></a>
                 </div>
             </div>
             </div>
@@ -515,7 +514,6 @@
                 <a href=""><i class="bi bi-twitter"></i></a>
                 <a href=""><i class="bi bi-facebook"></i></a>
                 <a href=""><i class="bi bi-instagram"></i></a>
-                <a href=""><i class="bi bi-linkedin"></i></a>
                 </div>
             </div>
             </div>
@@ -531,7 +529,6 @@
                 <a href=""><i class="bi bi-twitter"></i></a>
                 <a href=""><i class="bi bi-facebook"></i></a>
                 <a href=""><i class="bi bi-instagram"></i></a>
-                <a href=""><i class="bi bi-linkedin"></i></a>
                 </div>
             </div>
             </div>

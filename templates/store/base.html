@@ -1,0 +1,52 @@
+{% extends "site/base.html" %}
+
+
+{% block navbar %}
+<style>
+    #header{
+      background: rgba(21, 34, 43, 0.85);
+    }
+
+    .bg-orange{
+        background-color: #ff4a17;
+    }
+    
+    .btn.bg-orange:hover{
+        background-color: #a83414;
+    }
+
+    .msg{
+      animation-name: disapper;
+      animation-delay: 5s;
+      animation-fill-mode: forwards;
+      animation-duration: .5s;
+    }
+
+    @keyframes disapper{
+      from{
+        opacity: 1;
+      }
+      to{
+        opacity: 0;
+        display: none;
+      }
+    }
+  </style>
+
+<header id="header" class="sticky-top ">
+    <div class="container d-flex align-items-center justify-content-between">
+
+      <h1 class="logo"> <a href="{% url 'website:home' %}"> <span class="text-danger">EL</span>YON </a> </h1>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto " href="{% url 'website:home' %}"> Home </a></li>
+          <li><a class="nav-link scrollto {% if active_nav == 'home' %} active {% endif %} " href="{% url 'store:home' %}"> Store </a></li>
+          <li><a class="nav-link scrollto {% if active_nav == 'cart' %} active {% endif %} " href="{% url 'store:cart' %}"> Cart </a></li
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+
+    </div>
+  </header><!-- End Header -->
+{% endblock navbar %}

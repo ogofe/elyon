@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
 from .models import (
     Receivable,
+)
+from store.models import (
     Customer,
     CustomerOrder,
     Product,
 )
-from .serializers import RecievableSerializer
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
@@ -54,6 +55,7 @@ def logout_view(request):
     return redirect('core:login')
 
 
+@login_required(redirect_field_name='rdr_next', login_url='core:login')
 def home_view(request, **kwargs):
     template = 'dashboard/index.html'
     ctx = {

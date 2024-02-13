@@ -1,4 +1,4 @@
-from .models import Message, Notification, CatalogItem
+from .models import Message, Notification, SiteSettings
 
 
 def messages(request):
@@ -11,7 +11,8 @@ def messages(request):
 
 
 def catalog(request):
-    _catalog = CatalogItem.objects.filter(site_preview=True)
+    settings = SiteSettings.objects.get(id=1)
+    _catalog = settings.catalog_items.all()
     context = {
         'catalog': _catalog.order_by('-id'),
         'catalog_count': _catalog.count(),

@@ -1,11 +1,11 @@
+from collections.abc import Iterable
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager, User
 import os
 
 
-def make_invoice_id(lim=5):
+def make_random_char(lim=5):
     char = os.urandom(5).hex()
-    # char = hash(os.urandom(5).hex())
     return char
 
 # Create your models here.
@@ -13,7 +13,6 @@ class DbModel(models.Model):
     date_created = models.DateTimeField(auto_now=True)
     class Meta:
         abstract = True
-
 
 
 class Message(DbModel):
@@ -38,29 +37,11 @@ class Notification(DbModel):
         return self.title
 
 
-class Customer(DbModel):
-    full_name = models.CharField(max_length=400)
-    address = models.CharField(max_length=400)
-    phone_number = models.CharField(max_length=400)
-    email = models.EmailField(unique=True)
-
-    def __str__(self):
-        return self.full_name
-
-
 FILE_TYPES = (
     ('image', 'Image File'),
     ('video', 'Video File'),
     ('doc', 'Document File'),
     ('other', 'Other File Type'),
-)
-
-ORDER_STATUSES = (
-    ('pending', 'Pending'),
-    # ('pending', 'Pending'),
-    # ('pending', 'Pending'),
-    # ('pending', 'Pending'),
-    # ('pending', 'Pending'),
 )
 
 class File(DbModel):
@@ -69,127 +50,87 @@ class File(DbModel):
     file_type = models.CharField(max_length=20, default='image', choices=FILE_TYPES)
 
 
+class OrderUnit(DbModel):
+    # An order unit is a representation of how many pieces
+    # make up the whole of a unit
+    # e.g Score = 20 pieces, Dozen = 12 pieces, Gross = 120 pieces
+    # so if a shipment is received for 15 scores of camouflage
+    # then the recievable's stock_quantity += (15 * 20) ie 300 
+    name = models.CharField(max_length=200)
+    quantity_per_bundle = models.PositiveIntegerField(default=1)
+
+    def __str__(self) -> str:
+        return self.name
+    
+
 class Receivable(DbModel):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    stock_quantity = models.PositiveIntegerField(default=0)
-    unit = models.CharField(max_length=100)
+    stock_quantity = models.PositiveIntegerField(default=0) # in pieces
     images = models.ManyToManyField("File", blank=True, limit_choices_to={'file_type': 'image' })
 
     def __str__(self):
         return self.name
-
-
-# Base product model
-class Product(DbModel):
-    reiceivable = models.ForeignKey("Receivable", on_delete=models.CASCADE, related_name='parent')
-    price = models.DecimalField(max_digits=1000, decimal_places=2)
-    description = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-
-    @property
-    def name(self):
-        return self.reiceivable.name
-
-    @property
-    def stock_quantity(self):
-        return self.reiceivable.stock_quantity    
-
-    @property
-    def unit(self):
-        return self.reiceivable.unit
-
-    @property
-    def images(self):
-        return self.reiceivable.images
-
-    
-
-
-class DeliveryItem(DbModel):
-    receivable = models.ForeignKey("Receivable", on_delete=models.CASCADE)
-    quantity = models.IntegerField()
-    unit = models.CharField(max_length=200)
-
-
-
-class Delivery(DbModel):
-    date_recorded = models.DateTimeField(auto_now=True)
-    arrival_date = models.DateTimeField(blank=True, null=True)
-    date_recorded = models.DateTimeField(auto_now=True)
-    items = models.ManyToManyField(DeliveryItem, blank=True)
-
-
-class CustomerOrder(DbModel):
-    invoice_id = models.ForeignKey("Invoice", on_delete=models.CASCADE)
-    status = models.CharField(max_length=30, default='pending', choices=ORDER_STATUSES)
-    cancelled = models.BooleanField(default=False)
-    delivery_status = models.BooleanField(default=False)
-
-
-
-class OrderItem(DbModel):
-    invoice_id = models.ForeignKey("Invoice", on_delete=models.CASCADE)
-    product = models.ForeignKey("Product", on_delete=models.CASCADE)
-    quantity = models.IntegerField()
-
-    def __str__(self):
-        return self.product.name
-
-
-
-class Invoice(DbModel):
-    invoice_id = models.CharField(unique=True, max_length=10, default=make_invoice_id)
-    invoiced_to = models.ForeignKey("Customer", on_delete=models.CASCADE)
-    payment_status = models.BooleanField(default=False)
-    order_items = models.ManyToManyField("OrderItem", related_name='items', blank=True)
-    include_taxes = models.BooleanField(default=True)
-    vat = models.DecimalField(max_digits=4, decimal_places=2, default=7.50, blank=True, null=True)
-    
-    def subtotal(self):
-        amt = 0
-        for item in self.order_items.all():
-            amt += (item.product.price * item.quantity)
-        if self.include_taxes:
-            amt += self.vat
-        return amt
-
-    def __str__(self):
-        return self.invoice_id
-
-
-# Site
-class CatalogImage(DbModel):
-    catalog = models.ForeignKey("CatalogItem", on_delete=models.CASCADE, )
-    image = models.ImageField(upload_to='catalog/')
-
-    def __str__(self) -> str:
-        return f'{self.catalog.name} image {self.id}'
-
-class CatalogItem(DbModel):
-    name = models.CharField(max_length=200)
-    description = models.TextField(blank=True, null=True)
-    site_preview = models.BooleanField(default=True)
-    images = models.ManyToManyField("CatalogImage", blank=True)
-
-    def __str__(self) -> str:
-        return f'{self.name}'
     
     @property
     def slug(self):
-        return self.name.lower().replace(' ', '-').replace('.', '').replace("'", '')
+        slug = self.name.lower().replace(' ', '-').replace("'", '').replace('/', '')
+        return slug
 
 
-# class StaffAccount(DbModel):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+class ShipmentItem(DbModel):
+    receivable = models.ForeignKey("Receivable", on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    unit = models.ForeignKey('OrderUnit', on_delete=models.CASCADE)
 
-#     def __str__(self):
-#         return self.user.first_name
+    def __str__(self):
+        return self.receivable.name
+
+
+class ShipmentDelivery(DbModel):
+    shipment_id = models.CharField(max_length=20, default=make_random_char)
+    date_recorded = models.DateTimeField(auto_now=True)
+    arrival_date = models.DateTimeField(blank=True, null=True)
+    date_recorded = models.DateTimeField(auto_now=True)
+    items = models.ManyToManyField(ShipmentItem, blank=True)
+    saved = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.saved:
+            for item in self.items.all():
+                item.receivable.stock_quantity += int(
+                    int(item.quantity) * int(item.unit.quantity_per_bundle)
+                )
+                item.receivable.save()
+            self.saved = True
+        super().save(*args, **kwargs)
+            
+
+
+class StaffAccount(User, DbModel):
+    is_staff = True
+
+    def __str__(self):
+        return self.first_name
 
 
 
-# class Permission(DbModel):pass
+
+
+class SiteSettings(models.Model):
+    catalog_items = models.ManyToManyField(Receivable, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.id == 1:
+            return super().save(*args, **kwargs)
+        else:
+            return
+
+SiteSettings().save()
+
+
+
+
+
 
 

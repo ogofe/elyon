@@ -30,12 +30,9 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'military',
-    'food',
     'core',
-    # 'material',
-    # 'material.admin',
-    # "material.admin.default",
+    'store',
+    
     'django.contrib.humanize',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,8 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'rest_framework',
-    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'store.middleware.CustomerCartMiddleware',
 ]
 
 ROOT_URLCONF = 'elyon.urls'
@@ -76,6 +72,7 @@ TEMPLATES = [
                 'core.context_processors.messages',
                 'core.context_processors.notifications',
                 'core.context_processors.catalog',
+                'store.context_processors.store_context',
             ],
         },
     },
