@@ -2,11 +2,16 @@ from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
 from .models import (
     Receivable,
+    OrderUnit,
+    File,
 )
 from store.models import (
     Customer,
     CustomerOrder,
     Product,
+    Category,
+    Tag,
+    
 )
 from rest_framework.response import Response
 from django.contrib.auth.models import User
@@ -15,6 +20,27 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http.request import HttpRequest
 
+
+def generate_breadcrumbs(request):
+    # Get the current path and split it into segments
+    current_path = request.path_info
+    path_segments = [segment for segment in current_path.split('/') if segment]
+
+    # Build the breadcrumbs list
+    breadcrumbs = []
+    url_so_far = ''
+    for item in range(0, len(path_segments)):
+        segment = path_segments[item]
+        is_last_segment = bool(segment == path_segments[-1])
+
+        url_so_far += f'/{segment}'
+        breadcrumbs.append({
+            'label': segment.title(),
+            'url': url_so_far,
+            'active': is_last_segment
+        })
+    
+    return breadcrumbs
 
 def redirect_authenticated_user(route):
     def decorator(view_func):
@@ -78,30 +104,65 @@ def inventory_view(request, **kwargs):
 
 
 @login_required(redirect_field_name='rdr_next', login_url='core:login')
-def product_add_view(request, **kwargs):
-    template = 'dashboard/product-add.html'
+def product_add_view(request:HttpRequest, **kwargs):
+    template = 'dashboard/products/add.html'
+    categories = Category.objects.all()
+    alltags = Tag.objects.all()
+    receivables = Receivable.objects.all()
+
     ctx = {
         'active_nav': 'products',
         'page_title': 'Add New Product',
+        'categories': categories,
+        'tags': alltags,
+        'bundles': OrderUnit.objects.all(),
+        'recievables': receivables,
     }
 
     if request.method == "POST":
         data = request.POST
+        images = request.POST.getlist('image')
+        tags = data.getlist('tags')
 
         new_product = Product(
-            # pass
+            name=data['name'],
+            receivable=receivables.get(id=data['recievable']),
+            price_per_piece=data['price'],
+            price_per_bundle=data['bundle-price'],
+            category=categories.get(name=data['category']),
+            description=data['description']
         )
+
+        # raise Exception
         new_product.save()
+
+        if tags:
+            for tag in tags:
+                new_product.tags.add(alltags.get(name=tag),)
+            new_product.save()
+        
+        if images:
+            for image in images:
+                img = File(
+                    name=f"{new_product.slug} - image {new_product.images.count()}",
+                    file=image
+                )
+                img.save()
+                new_product.images.add(img,)
+            new_product.save()
+        messages.success(request, f"You added a new product {data['name']}")
+        return redirect('core:products_list')
     return render(request, template, ctx)
 
 
 @login_required(redirect_field_name='rdr_next', login_url='core:login')
 def products_list_view(request, **kwargs):
-    template = 'dashboard/products.html'
+    template = 'dashboard/products/list.html'
     ctx = {
         'active_nav': 'products',
         'page_title': 'Product Catalog',
         'products' : Product.objects.all(),
+        'breadcrumbs': generate_breadcrumbs(request)
     }
     return render(request, template, ctx)
 

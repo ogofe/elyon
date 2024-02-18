@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from django.db import models
 from core.models import DbModel
 from django.contrib.auth.models import User
@@ -25,11 +26,13 @@ class Product(DbModel):
     description = models.TextField(blank=True, null=True)
     price_per_piece = models.DecimalField(max_digits=1000, decimal_places=2)
     price_per_bundle = models.DecimalField(max_digits=1000, decimal_places=2, blank=True, null=True)
-    reiceivable = models.ForeignKey("core.Receivable", on_delete=models.CASCADE, related_name='parent')
+    receivable = models.ForeignKey("core.Receivable", on_delete=models.CASCADE, related_name='parent')
     images = models.ManyToManyField("core.File", blank=True)
+    category = models.ForeignKey("Category", on_delete=models.CASCADE, blank=True, null=True)
+    tags = models.ManyToManyField("Tag",  blank=True, related_name='tags')
 
     def stock_quantity(self):
-        return self.reiceivable.stock_quantity
+        return self.receivable.stock_quantity
     
     def save(self, *args, **kwargs):
         self.slug=self.name.lower().replace(" ", '-').replace("'", '')
@@ -57,8 +60,11 @@ class Customer(models.Model):
     orders = models.ManyToManyField("CustomerOrder", blank=True)
 
     def __str__(self):
-        return f'Customer {self.id}'
+        if self.user:
+            return f'{self.user.get_full_name()}'
 
+        return f'Customer {self.id}'
+    
 
 
 class CustomerOrder(DbModel):
@@ -105,4 +111,14 @@ class OrderItem(DbModel):
         )
         return amt
 
+class Tag(DbModel):
+    name = models.CharField(max_length=200)
 
+    def __str__(self) -> str:
+        return self.name
+
+class Category(DbModel):
+    name = models.CharField(max_length=200)
+
+    def __str__(self) -> str:
+        return self.name

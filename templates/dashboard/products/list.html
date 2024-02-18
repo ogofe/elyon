@@ -1,5 +1,5 @@
-{% extends "./base.html" %}
-{% load static %}
+{% extends "dashboard/base.html" %}
+{% load static humanize %}
 
 
 {% block content %}
@@ -17,9 +17,10 @@
           <h5 class="card-title"> Products </h5>
 
           <!-- Table with stripped rows -->
-          <table class="table datatable">
+          <table class="table small datatable">
             <thead>
               <tr>
+                <th>#</th>
                 <th>
                   <b>N</b>ame
                 </th>
@@ -30,11 +31,12 @@
             </thead>
             <tbody>
               {% for prod in products %}
-                <tr>
-                  <td>{{ prod.name }}</td>
-                  <td>{{ prod.price }}</td>
-                  <td>{{ prod.description }} </td>                  
-                  <td>{{ prod.stock_quantity }} {{ prod.unit }} </td>                  
+              <tr>
+                  <td>{{ forloop.counter|intcomma }}</td>
+                  <td> <a href="{% url "core:product_add" %}"> {{ prod.name }} </a> </td>
+                  <td>{{ prod.price_per_piece|intcomma }}</td>
+                  <td>{{ prod.description|striptags|truncatewords:'10' }} </td>                  
+                  <td>{{ prod.stock_quantity|intcomma }} {{ prod.unit }} </td>                  
                 </tr>
                 {% empty %}
                 <tr>

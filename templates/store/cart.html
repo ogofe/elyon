@@ -1,5 +1,65 @@
 {% extends "./base.html" %}
 
+{% load static humanize %}
+
 {% block content %}
+
+<div class="container py-5">
+    <a href="{% url 'store:home' %}" class="btn btn-dark rounded-0"> <i class="bi bi-chevron-left"></i> Go Back </a>
+    
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="bg-orange text-white bold my-3 msg rounded-0 p-2 text-center">
+                {{ msg }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <h4 class="d-flex justify-content-between align-items-center mb-3 mt-5">
+      <span class="text-danger bold">Your cart</span>
+      <span class="badge bg-danger rounded-pill"> {{cart.items.count|default:"0"}} </span>
+    </h4>
+
+    <ul class="list-group mb-3">
+        {% for item in cart.items.all %}
+            <li class="list-group-item rounded-0 d-flex align-items-center justify-content-between lh-sm">
+                <div>
+                    <form method="post" id="cart-form-{{forloop.counter0}}">
+                        {% csrf_token %}
+                        <input type="hidden" name="item_id" value="{{item.id}}" />
+                    </form>
+
+                    <h6 class="my-0">{{ item.product.name }}</h6>
+                    
+                    <span class="text-body-secondary">
+                        {% if item.quantity_type == 'bundle' %}
+                            ₦{{item.product.price_per_bundle|intcomma}} per bundle x {{ item.quantity }} bundles
+                        {% else %}
+                            ₦{{item.product.price_per_piece|intcomma}} per piece x {{ item.quantity }} pieces
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div>
+                    <button type="submit" form="cart-form-{{forloop.counter0}}" class="btn btn-sm btn-danger rounded-0"> <i style="font-size: 20px;" class="bi bi-x-circle"></i> </button>
+                </div>
+            </li>
+            
+        {% empty %}
+            <li class="list-group-item rounded-0 d-flex align-items-center justify-content-between lh-sm">
+                <h4 class="my-0 bold">Your cart is empty, go back to the store to add an item to your cart.</h4>
+            </li>
+        {% endfor %}
+
+    </ul>
+
+    <div class="text-center py-3">
+        {% if cart.items.count > 0 %}
+            <a href="{% url 'store:checkout' %}" class="btn bg-orange text-white rounded-0"> Proceed to place Order <i class="bi bi-chevron-right"></i> </a>
+        {% endif %}
+    </div>
+
+</div>
+
 
 {% endblock content %}

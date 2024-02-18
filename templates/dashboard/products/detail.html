@@ -1,0 +1,154 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+
+{% block content %}
+<div>
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="card-body bg-white rounded p-3">
+      <div class="row">
+
+        <div class="col-lg-6">
+          <div class="form-group mb-3">
+            <label class="label small bold mb-2"> Product Name </label>
+            <input name="name" required="true" class="form-control rounded-0"/>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="form-group mb-3">
+            <label class="label small bold mb-2"> Recievable Item </label>
+            <select required="true" name="recievable" class="form-control rounded-0">
+              <option selected disabled="true"> Select an option </option>
+              {% for item in recievables %}
+                <option value="{{ item.id }}"> {{ item.name }} </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="form-group mb-3">
+            <label class="label small bold mb-2"> Product Price <small> (per piece) </small> </label>
+            <input name="price" required="true" type="number" step="0.01" min="1" class="form-control rounded-0" />
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="form-group mb-3">
+            <label class="label small bold mb-2"> Bundle Size </label>
+            <select required="true" name="bundle" class="form-control rounded-0">
+              <option selected disabled="true"> Select an option </option>
+              {% for item in bundles %}
+                <option value="{{ item.name }}"> {{ item.name }} </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        
+        <div class="col-lg-6">
+          <div class="form-group mb-3">
+            <label class="label small bold mb-2"> Bundle Price </label>
+            <input required="true" name="bundle-price" type="number" step="0.01" min="1" class="form-control rounded-0" />
+          </div>
+        </div>
+        
+        <div class="col-lg-6">
+          <div class="form-group mb-3">
+            <label class="label small bold mb-2"> Product category </label>
+            <select required="true" name="category" class="form-control rounded-0">
+              <option selected disabled="true"> Select an option </option>
+              {% for item in categories %}
+                <option value="{{ item.name }}"> {{ item.name }} </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        
+        <div class="col-lg-6">
+          <div class="form-group mb-3">
+            <label class="label small bold mb-2"> Product tags </label>
+            <select multiple="multiple" required="true" id="tags-select" name="tags" class="form-control rounded-0 select-2">
+              {% for item in tags %}
+                <option value="{{ item.name }}"> {{ item.name }} </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="form-group mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <label class="label small bold mb-2"> Product Images </label>
+              <button type="button" class="btn btn-sm btn-primary rounded-0" id="uploadBtn">Upload Image <small> (max. 3) </small> </button>
+            </div>
+            <div id="previewArea" class="d-flex flex-wrap border p-2 mt-2"></div>
+          </div>
+        </div>
+
+          <!-- upload_component.html -->
+
+        <div class="col-12">
+          <div class="form-group mb-3">
+            <label class="label small bold mb-2"> Product Description </label>
+            <textarea name="description" class="tinymce-editor rounded-0"></textarea>
+          </div>
+        </div>
+
+        <div class="col-12 mt-4">
+          <div class="border rounded bg-light p-2 d-flex">
+            <a href="{% url 'core:products_list' %}" class="btn btn-sm d-block btn-dark"> Back </a>
+
+            <button type="submit" class="btn btn-sm btn-primary mx-3"> Save product </button>
+          </div>
+        </div>
+      
+      </div>
+    </div>
+  </form>
+</div>
+
+<script type="text/javascript">
+  
+  setTimeout(() => $('#tags-select').select2(), 1000);
+
+  const previewArea = document.getElementById('previewArea');
+  const uploadBtn = document.getElementById('uploadBtn');
+  let fileInputCount = 0;
+
+  uploadBtn.addEventListener('click', function(){
+    if (fileInputCount < 3){
+      addFileInput()
+    }
+  });
+
+  function addFileInput() {
+    const fileInput = document.createElement('input');
+
+    fileInput.type = 'file';
+    fileInput.name = 'image';
+    fileInput.accept = 'image/*';
+    fileInput.className = 'form-control-file mb-2 d-none';
+    fileInput.id = `image-${fileInputCount}`;
+    previewArea.appendChild(fileInput);
+    fileInputCount++;
+    fileInput.addEventListener('input', function(){
+      const previewUrl = URL.createObjectURL(fileInput.files[0])
+  
+      const display = `
+      <div id="preview-${fileInputCount}" class="img-preview border p-2 rounded mr-2">
+        <img class="rounded" src="${previewUrl}" />
+        <button type="button" class="btn btn-sm w-100 btn-danger mt-1"> Remove </button>
+      </div>`
+
+      previewArea.insertAdjacentHTML('beforeend', display)
+    }) 
+    fileInput.click()
+
+
+  }
+
+</script>
+{% endblock content %}

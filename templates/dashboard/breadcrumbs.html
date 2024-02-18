@@ -1,0 +1,18 @@
+<div class="pagetitle my-3">
+    <div class="d-flex align-items-center justify-content-between">
+      <h1>{{ page_title }}</h1>
+      <a class="btn btn-sm btn-link p-2 px-3" href="{% url 'website:home' %}"> Got to Main Site </a>
+    </div>
+
+    <nav class="mt-2 ">
+      <ol class="breadcrumb">
+        {% for crumb in breadcrumbs %}
+            {% if crumb.url %}
+                <li class="breadcrumb-item {% if crumb.active %} active {% endif %}"><a href="{{ crumb.url }}"> {{ crumb.label }} </a></li>
+            {% else %}
+                <li class="breadcrumb-item {% if crumb.active %} active {% endif %}">{{ crumb.label }}</li>
+            {% endif %}
+        {% endfor %}
+      </ol>
+    </nav>
+</div>

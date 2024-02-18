@@ -4,7 +4,9 @@ from .models import (
     Customer,
     CustomerOrder,
     OrderItem,
-    ShoppingCart
+    ShoppingCart,
+    Category,
+    Tag,
 )
 # Register your models here.
 
@@ -13,3 +15,5 @@ admin.site.register(CustomerOrder)
 admin.site.register(Customer)
 admin.site.register(OrderItem)
 admin.site.register(ShoppingCart)
+admin.site.register(Category)
+admin.site.register(Tag)

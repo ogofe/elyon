@@ -132,7 +132,7 @@ USE_TZ = True
 MEDIA_URL = 'files/'
 MEDIA_ROOT = BASE_DIR / 'uploads'
 
-# STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     (BASE_DIR / 'static'),
