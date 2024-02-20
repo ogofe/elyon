@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'core',
     'store',
+    'website',
     
     'django.contrib.humanize',
     'django.contrib.admin',
@@ -53,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'store.middleware.CustomerCartMiddleware',
+    'website.middleware.CookiesMiddleware',
 ]
 
 ROOT_URLCONF = 'elyon.urls'
@@ -74,6 +76,7 @@ TEMPLATES = [
                 'core.context_processors.notifications',
                 'core.context_processors.catalog',
                 'store.context_processors.store_context',
+                'website.context_processors.website_context',
             ],
         },
     },

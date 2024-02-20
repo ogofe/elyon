@@ -75,6 +75,35 @@
   
   {% endblock content %}
 
+  {% if show_cookie_consent %}
+    <div class="cookie-consent">
+      <div class="p-3 bg-dark container card-body text-white">
+        <p class="bold"> This site uses cookies to enhance your browsing experience. <br /> By clicking I understand, you consent to the storage of cookies in your web browser </p>
+
+        <button id="cookie-consent" class="btn btn-danger bold rounded-0 p-2 px-5 bg-md"> I understand </button>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      let btn = document.getElementById('cookie-consent');
+      let consent = document.querySelector('.cookie-consent');
+
+      btn.addEventListener('click', function(){
+        const url = document.location
+        fetch(`${url.protocol}//${url.host}/accept-cookies`)
+        .then(res => res.json())
+        .then(data => {
+          console.log("Cookie data:", data)
+        })
+        .catch(err => {
+          console.log("Error:", data)
+        })
+
+        consent.remove()
+      })
+    </script>
+  {% endif %}
+
   {% block footer %}
     <!-- ======= Footer ======= -->
     <footer id="footer">

@@ -33,7 +33,7 @@
               {% for prod in products %}
               <tr>
                   <td>{{ forloop.counter|intcomma }}</td>
-                  <td> <a href="{% url "core:product_add" %}"> {{ prod.name }} </a> </td>
+                  <td> <a href="{% url "core:product_detail" prod.slug %}"> {{ prod.name }} </a> </td>
                   <td>{{ prod.price_per_piece|intcomma }}</td>
                   <td>{{ prod.description|striptags|truncatewords:'10' }} </td>                  
                   <td>{{ prod.stock_quantity|intcomma }} {{ prod.unit }} </td>                  

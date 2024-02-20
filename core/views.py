@@ -42,6 +42,7 @@ def generate_breadcrumbs(request):
     
     return breadcrumbs
 
+
 def redirect_authenticated_user(route):
     def decorator(view_func):
         def wrapper(request, *args, **kwargs):
@@ -51,6 +52,7 @@ def redirect_authenticated_user(route):
         return wrapper
     return decorator
 
+# Auth Views
 
 @redirect_authenticated_user('core:home')
 def login_view(request:HttpRequest, **kwargs):
@@ -81,6 +83,8 @@ def logout_view(request):
     return redirect('core:login')
 
 
+# Dashboard
+
 @login_required(redirect_field_name='rdr_next', login_url='core:login')
 def home_view(request, **kwargs):
     template = 'dashboard/index.html'
@@ -103,6 +107,8 @@ def inventory_view(request, **kwargs):
     return render(request, template, ctx)
 
 
+# Products Views
+
 @login_required(redirect_field_name='rdr_next', login_url='core:login')
 def product_add_view(request:HttpRequest, **kwargs):
     template = 'dashboard/products/add.html'
@@ -121,7 +127,7 @@ def product_add_view(request:HttpRequest, **kwargs):
 
     if request.method == "POST":
         data = request.POST
-        images = request.POST.getlist('image')
+        imagelist = request.FILES.getlist('image')
         tags = data.getlist('tags')
 
         new_product = Product(
@@ -132,8 +138,6 @@ def product_add_view(request:HttpRequest, **kwargs):
             category=categories.get(name=data['category']),
             description=data['description']
         )
-
-        # raise Exception
         new_product.save()
 
         if tags:
@@ -141,8 +145,8 @@ def product_add_view(request:HttpRequest, **kwargs):
                 new_product.tags.add(alltags.get(name=tag),)
             new_product.save()
         
-        if images:
-            for image in images:
+        if imagelist:
+            for image in imagelist:
                 img = File(
                     name=f"{new_product.slug} - image {new_product.images.count()}",
                     file=image
@@ -150,6 +154,59 @@ def product_add_view(request:HttpRequest, **kwargs):
                 img.save()
                 new_product.images.add(img,)
             new_product.save()
+        messages.success(request, f"You added a new product {data['name']}")
+        return redirect('core:products_list')
+    return render(request, template, ctx)
+
+
+@login_required(redirect_field_name='rdr_next', login_url='core:login')
+def product_detail_view(request:HttpRequest, item_id, **kwargs):
+    template = 'dashboard/products/detail.html'
+    categories = Category.objects.all()
+    alltags = Tag.objects.all()
+    receivables = Receivable.objects.all()
+    product = Product.objects.get(slug=item_id)
+
+    ctx = {
+        'active_nav': 'products',
+        'page_title': f'View / Edit {product.name}',
+        'categories': categories,
+        'product': product,
+        'tags': alltags,
+        'bundles': OrderUnit.objects.all(),
+        'breadcrumbs': generate_breadcrumbs(request),
+        'recievables': receivables,
+    }
+
+    if request.method == "POST":
+        data = request.POST
+        imagelist = request.FILES.getlist('image')
+        tags = data.getlist('tags')
+
+        # new_product = Product(
+        #     name=data['name'],
+        #     receivable=receivables.get(id=data['recievable']),
+        #     price_per_piece=data['price'],
+        #     price_per_bundle=data['bundle-price'],
+        #     category=categories.get(name=data['category']),
+        #     description=data['description']
+        # )
+        # new_product.save()
+
+        # if tags:
+        #     for tag in tags:
+        #         new_product.tags.add(alltags.get(name=tag),)
+        #     new_product.save()
+        
+        # if imagelist:
+        #     for image in imagelist:
+        #         img = File(
+        #             name=f"{new_product.slug} - image {new_product.images.count()}",
+        #             file=image
+        #         )
+        #         img.save()
+        #         new_product.images.add(img,)
+        #     new_product.save()
         messages.success(request, f"You added a new product {data['name']}")
         return redirect('core:products_list')
     return render(request, template, ctx)
@@ -179,23 +236,33 @@ def customers_view(request, **kwargs):
     return render(request, template, ctx)
 
 
+# Orders View
 @login_required(redirect_field_name='rdr_next', login_url='core:login')
 def orders_view(request, **kwargs):
-    template = 'dashboard/orders.html'
+    template = 'dashboard/orders/list.html'
     
     ctx = {
         'active_nav': 'orders',
         'page_title': 'Purchase Orders',
         'orders' : CustomerOrder.objects.all(),
+        'breadcrumbs': generate_breadcrumbs(request),
     }
+
+    if request.method == "POST":
+        data = request.POST
+        items = data.getlist('action-item', None)
+        raise Exception
     return render(request, template, ctx)
 
 
 
-# @login_required('rdr_next', 'core:login')
+# Auxilary Views 
+@login_required(redirect_field_name='rdr_next', login_url='core:login')
 def receivable_create_view(request, **kwargs):
     pass
 
+
+# 
 def search_view(request):
     ctx = {
 
@@ -233,3 +300,7 @@ def search_view(request):
             'data': response_data
         }
     )
+
+
+
+

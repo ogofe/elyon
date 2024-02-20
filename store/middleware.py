@@ -1,8 +1,4 @@
-from django.http import HttpRequest, HttpResponse
 from django.utils.deprecation import MiddlewareMixin
-from .models import Customer, ShoppingCart
-from django.contrib.auth.models import User
-from django.contrib.auth import login
 from .views import generate_anonymous_user_id
 
 class CustomerCartMiddleware(MiddlewareMixin):

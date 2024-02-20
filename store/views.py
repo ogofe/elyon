@@ -8,6 +8,9 @@ from .models import (
     Category,
     CustomerOrder,
 )
+from website.models import(
+    CarouselItem
+)
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
@@ -118,7 +121,11 @@ def store_home_view(request):
     if query:
         products = products.filter(
             Q(name__iexact=query) |
-            Q(name__icontains=query)
+            Q(name__icontains=query) |
+            Q(tags__name__icontains=query) |
+            Q(tags__name__iexact=query) |
+            Q(category__name__iexact=query) |
+            Q(category__name__icontains=query) 
         )
 
     ctx = {
@@ -127,6 +134,7 @@ def store_home_view(request):
         'page_title': "Our Store",
         'searching': bool(query),
         'categories': Category.objects.all(),
+        'carousel': CarouselItem.objects.all(),
         'query': query,
     }
     return render(request, template, ctx)

@@ -68,6 +68,7 @@ class Customer(models.Model):
 
 
 class CustomerOrder(DbModel):
+
     invoice_id = models.CharField(unique=True, max_length=10, default=make_invoice_id)
     invoiced_to = models.ForeignKey("Customer", on_delete=models.CASCADE)
     cancelled = models.BooleanField(default=False)
@@ -78,10 +79,19 @@ class CustomerOrder(DbModel):
     include_taxes = models.BooleanField(default=True)
     vat = models.DecimalField(max_digits=4, decimal_places=2, default=7.50, blank=True, null=True)
     
+    @property
+    def total(self):
+        return self.subtotal
+    
+    @property
     def subtotal(self):
+        from core.models import OrderUnit
         amt = 0
         for item in self.order_items.all():
-            amt += (item.product.price * item.quantity)
+            if item.quantity_type == 'pieces':
+                amt += (item.product.price_per_piece * item.quantity)
+            elif item.quantity_type == 'bundle':
+                amt += (item.product.price_per_bundle * item.quantity)
         if self.include_taxes:
             amt += self.vat
         return amt
@@ -122,3 +132,5 @@ class Category(DbModel):
 
     def __str__(self) -> str:
         return self.name
+
+

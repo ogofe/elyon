@@ -422,6 +422,14 @@ section#shadow-host-companion{
   font-weight: 600;
 }
 
+.cookie-consent {
+  position: fixed;
+  left: 0px;
+  bottom: 2.5vh;
+  z-index: 20000;
+  width: 100%;
+}
+
 /*--------------------------------------------------------------
 # Hero Section
 --------------------------------------------------------------*/

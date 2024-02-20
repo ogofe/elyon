@@ -33,26 +33,26 @@
     }
   </style>
 
-<header id="header" class="sticky-top ">
-    <div class="container d-flex align-items-center justify-content-between">
-      <h1 class="logo"> <a href="{% url 'website:home' %}"> <span class="text-danger">EL</span>YON </a> </h1>
+<header id="header" class="sticky-top bg-dark">
+  <div class="container d-flex align-items-center justify-content-between">
+    <h1 class="logo"> <a href="{% url 'website:home' %}"> <span class="text-danger">EL</span>YON </a> </h1>
 
-      <nav id="navbar" class="navbar">
-        <ul>
-          <li><a class="nav-link scrollto " href="{% url 'website:home' %}"> Home </a></li>
-          <li><a class="nav-link scrollto {% if active_nav == 'home' %} active {% endif %} " href="{% url 'store:home' %}"> Store </a></li>
-          <li><a class="nav-link scrollto {% if active_nav == 'cart' %} active {% endif %} " href="{% url 'store:cart' %}"> Cart </a></li>
-          {% if user.is_authenticated %}
-            
-          {% else %}
-            <li><a class="nav-link scrollto " href="{% url 'store:login' %}"> Login </a></li>
-          {% endif %}
-        </ul>
+    <nav id="navbar" class="navbar">
+      <ul>
+        <li><a class="nav-link scrollto " href="{% url 'website:home' %}"> Home </a></li>
+        <li><a class="nav-link scrollto {% if active_nav == 'home' %} active {% endif %} " href="{% url 'store:home' %}"> Store </a></li>
+        <li><a class="nav-link scrollto {% if active_nav == 'cart' %} active {% endif %} " href="{% url 'store:cart' %}"> Cart </a></li>
+        {% if user.is_authenticated %}
+          
+        {% else %}
+          <li><a class="nav-link scrollto " href="{% url 'store:login' %}"> Login </a></li>
+        {% endif %}
+      </ul>
 
-        <i class="bi bi-list mobile-nav-toggle"></i>
-      </nav>
+      <i class="bi bi-list mobile-nav-toggle"></i>
+    </nav>
 
 
-    </div>
-  </header><!-- End Header -->
+  </div>
+</header><!-- End Header -->
 {% endblock navbar %}

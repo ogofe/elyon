@@ -7,6 +7,7 @@ from .views import (
     # products
     product_add_view,
     products_list_view,
+    product_detail_view,
 
     inventory_view,
     customers_view,
@@ -24,7 +25,7 @@ urlpatterns = [
     path('search/', search_view, name='search'),
     
     path('products/add/', product_add_view, name='product_add'),
-    path('products/<product_id>/', products_list_view, name='product_detail'),
+    path('products/<item_id>/', product_detail_view, name='product_detail'),
     path('products/', products_list_view, name='products_list'),
     
     path('customers/add/', customers_view, name='customers_list'),
